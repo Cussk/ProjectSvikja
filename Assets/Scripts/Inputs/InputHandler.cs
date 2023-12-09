@@ -1,4 +1,5 @@
 using System;
+using Animation;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -7,7 +8,9 @@ namespace Inputs
     public class InputHandler
     {
         PlayerControls _playerControls;
+        AnimatorController _animatorController;
         Vector2 _movementInput;
+        float _moveAmount;
         float _verticalInput;
         float _horizontalInput;
 
@@ -16,8 +19,9 @@ namespace Inputs
         public float HorizontalInput => _horizontalInput;
         #endregion
 
-        public InputHandler()
+        public InputHandler(AnimatorController animatorController)
         {
+            _animatorController = animatorController;
         }
 
         public void OnEnable()
@@ -47,6 +51,8 @@ namespace Inputs
         {
             _verticalInput = _movementInput.y;
             _horizontalInput = _movementInput.x;
+            _moveAmount = Mathf.Clamp01(Mathf.Abs(_horizontalInput) + Mathf.Abs(_verticalInput));
+            _animatorController.UpdateAnimatorValues(0, _moveAmount);
         }
     }
 }
