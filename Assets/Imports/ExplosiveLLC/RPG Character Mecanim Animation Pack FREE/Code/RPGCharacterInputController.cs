@@ -5,7 +5,7 @@ using RPGCharacterAnims.Lookups;
 
 namespace RPGCharacterAnims
 {
-	[HelpURL("https://docs.unity3d.com/Manual/class-InputManager.html")]
+	[HelpURL("https://docs.unity3d.com/Manual/class-InputHandler.html")]
 
 	public class RPGCharacterInputController : MonoBehaviour
     {
