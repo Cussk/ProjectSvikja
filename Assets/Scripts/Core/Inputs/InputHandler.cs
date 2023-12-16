@@ -1,7 +1,6 @@
 using System;
 using Animation;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Inputs
 {
@@ -10,9 +9,12 @@ namespace Inputs
         PlayerControls _playerControls;
         AnimatorController _animatorController;
         Vector2 _movementInput;
+        Vector2 _cameraInput;
         float _moveAmount;
         float _verticalInput;
         float _horizontalInput;
+        public float cameraInputX;
+        public float cameraInputY;
 
         #region Properties
         public float VerticalInput => _verticalInput;
@@ -30,6 +32,7 @@ namespace Inputs
             {
                 _playerControls = new PlayerControls();
                 _playerControls.PlayerMovement.Movement.performed += input => _movementInput = input.ReadValue<Vector2>();
+                _playerControls.PlayerMovement.Camera.performed += input => _cameraInput = input.ReadValue<Vector2>();
             }
 
             _playerControls.Enable();    
@@ -51,6 +54,10 @@ namespace Inputs
         {
             _verticalInput = _movementInput.y;
             _horizontalInput = _movementInput.x;
+
+            cameraInputY = _cameraInput.y;
+            cameraInputX = _cameraInput.x;
+            
             _moveAmount = Mathf.Clamp01(Mathf.Abs(_horizontalInput) + Mathf.Abs(_verticalInput));
             _animatorController.UpdateAnimatorValues(0, _moveAmount);
         }
