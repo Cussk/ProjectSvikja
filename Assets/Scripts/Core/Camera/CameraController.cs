@@ -1,5 +1,5 @@
-using Inputs;
-using Player;
+using Core.Inputs;
+using Core.Player;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;

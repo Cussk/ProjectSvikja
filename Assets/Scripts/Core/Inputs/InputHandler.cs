@@ -1,14 +1,17 @@
 using System;
 using Animation;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace Inputs
+namespace Core.Inputs
 {
-    public class InputHandler
+    public class InputHandler : PlayerControls.IPlayerWorldControlsActions
     {
+        public event Action jumpEvent;
+        
         PlayerControls _playerControls;
         AnimatorController _animatorController;
-        Vector2 _movementInput;
+        Vector2 _movementValue;
         Vector2 _cameraInput;
         float _moveAmount;
         float _verticalInput;
@@ -17,6 +20,8 @@ namespace Inputs
         public float cameraInputY;
 
         #region Properties
+
+        public Vector2 MovementValue => _movementValue;
         public float VerticalInput => _verticalInput;
         public float HorizontalInput => _horizontalInput;
         #endregion
@@ -31,8 +36,7 @@ namespace Inputs
             if (_playerControls == null)
             {
                 _playerControls = new PlayerControls();
-                _playerControls.PlayerMovement.Movement.performed += input => _movementInput = input.ReadValue<Vector2>();
-                _playerControls.PlayerMovement.Camera.performed += input => _cameraInput = input.ReadValue<Vector2>();
+                _playerControls.PlayerWorldControls.SetCallbacks(this);
             }
 
             _playerControls.Enable();    
@@ -45,21 +49,23 @@ namespace Inputs
 
         public void HandleAllInputs()
         {
-            HandleMovementInput();
-            //HandleJumpInput
-            //HandleActionInput
+            
         }
 
-        void HandleMovementInput()
+        public void OnMovement(InputAction.CallbackContext context)
         {
-            _verticalInput = _movementInput.y;
-            _horizontalInput = _movementInput.x;
+            _movementValue = context.ReadValue<Vector2>();
+        }
 
-            cameraInputY = _cameraInput.y;
-            cameraInputX = _cameraInput.x;
+        public void OnCamera(InputAction.CallbackContext context)
+        {
             
-            _moveAmount = Mathf.Clamp01(Mathf.Abs(_horizontalInput) + Mathf.Abs(_verticalInput));
-            _animatorController.UpdateAnimatorValues(0, _moveAmount);
+        }
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            if (!context.performed) return;
+            jumpEvent?.Invoke();
         }
     }
 }

@@ -1,5 +1,5 @@
 using System;
-using Inputs;
+using Core.Inputs;
 using UnityEngine;
 
 namespace Movement
