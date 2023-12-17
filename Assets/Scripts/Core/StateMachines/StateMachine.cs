@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -5,19 +6,29 @@ namespace Core.StateMachines
 {
     public abstract class StateMachine : MonoBehaviour
     {
-        BaseState _currentState;
+        protected BaseState currentState;
 
         void Update()
         {
-            _currentState?.Tick(Time.deltaTime);
+            currentState?.Tick(Time.deltaTime);
+        }
+
+        void FixedUpdate()
+        {
+            currentState?.FixedTick(Time.deltaTime);
+        }
+
+        void LateUpdate()
+        {
+            currentState?.LateTick(Time.deltaTime);
         }
 
         public void ChangeState(BaseState newState)
         {
-            _currentState?.Exit();
+            currentState?.Exit();
 
-            _currentState = newState;
-            _currentState?.Enter();
+            currentState = newState;
+            currentState?.Enter();
         }
     }
 }

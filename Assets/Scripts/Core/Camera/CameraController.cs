@@ -9,32 +9,28 @@ namespace Core.Camera
     public class CameraController : MonoBehaviour
     {
         PlayerController _playerController;
-        InputHandler _inputHandler;
         [SerializeField] GameObject cameraPivotGameObject;
         [SerializeField] float cameraFollowSpeed = 0.2f;
         [SerializeField] float cameraPitchSpeed = 25f;
         [SerializeField] float cameraYawSpeed = 25f;
         [SerializeField] float cameraLookSmoothTime = 1;
+        [SerializeField] float minPitchAngle = -35;
+        [SerializeField] float maxPitchAngle = 35;
         Transform _targetTransform;
         Vector3 _cameraFollowVelocity = Vector3.zero;
         float _pitchAngle;
         float _yawAngle;
-        float _minPitchAngle = -35;
-        float _maxPitchAngle = 35;
-        
 
-        public void Init(PlayerController playerController, InputHandler inputHandler)
+        public void Init(PlayerController playerController)
         {
             _playerController = playerController;
-            _inputHandler = inputHandler;
-            
             _targetTransform = _playerController.transform;
         }
 
-        public void HandleAllCameraMovement()
+        public void HandleAllCameraMovement(float cameraInputY, float cameraInputX)
         {
             FollowTarget();
-            RotateCamera();
+            RotateCamera(cameraInputY, cameraInputX);
         }
         
         void FollowTarget()
@@ -45,11 +41,11 @@ namespace Core.Camera
             transform.position = targetPosition;
         }
 
-        void RotateCamera()
+        void RotateCamera(float cameraInputY, float cameraInputX)
         {
-            _pitchAngle = Mathf.Lerp(_pitchAngle, _pitchAngle + (_inputHandler.cameraInputY * cameraPitchSpeed), cameraLookSmoothTime * Time.deltaTime);
-            _yawAngle = Mathf.Lerp(_yawAngle, _yawAngle + (_inputHandler.cameraInputX * cameraYawSpeed), cameraLookSmoothTime * Time.deltaTime);
-            _pitchAngle = Mathf.Clamp(_pitchAngle, _minPitchAngle, _maxPitchAngle);
+            _pitchAngle = Mathf.Lerp(_pitchAngle, _pitchAngle + (cameraInputY * cameraPitchSpeed), cameraLookSmoothTime * Time.deltaTime);
+            _yawAngle = Mathf.Lerp(_yawAngle, _yawAngle + (cameraInputX * cameraYawSpeed), cameraLookSmoothTime * Time.deltaTime);
+            _pitchAngle = Mathf.Clamp(_pitchAngle, minPitchAngle, maxPitchAngle);
 
             var rotation = Vector3.zero;
             rotation.y = _yawAngle;

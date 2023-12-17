@@ -2,8 +2,8 @@ using System;
 using Animation;
 using Core.Camera;
 using Core.Inputs;
+using Core.Movement;
 using Core.StateMachines.Player;
-using Movement;
 using UnityEngine;
 
 namespace Core.Player
@@ -14,39 +14,24 @@ namespace Core.Player
         CameraController _cameraController;
         AnimatorController _animatorController;
         InputHandler _inputHandler;
-        CharacterController _characterController;
+        Rigidbody _rigidbody;
         PlayerMovementHandler _playerMovementHandler;
         
         void Awake()
         {
-            _characterController = GetComponent<CharacterController>();
+            _rigidbody = GetComponent<Rigidbody>();
             _animatorController = GetComponent<AnimatorController>();
             _cameraController = FindObjectOfType<CameraController>();
-            _inputHandler = new InputHandler(_animatorController);
+            _inputHandler = new InputHandler();
             _inputHandler.OnEnable();
-            playerStateMachine.Init(_inputHandler, _characterController);
-            
-            _cameraController.Init(this, _inputHandler);
+            _playerMovementHandler = new PlayerMovementHandler(_rigidbody);
+            _cameraController.Init(this);
+            playerStateMachine.Init(_inputHandler, _playerMovementHandler, _cameraController, _animatorController);
         }
 
         void OnDestroy()
         {
             _inputHandler.OnDisable();
-        }
-
-        void Update()
-        {
-            _inputHandler.HandleAllInputs();
-        }
-
-        void FixedUpdate()
-        {
-           
-        }
-
-        void LateUpdate()
-        {
-           
         }
     }
 }

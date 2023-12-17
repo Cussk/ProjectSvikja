@@ -2,58 +2,56 @@ using System;
 using Core.Inputs;
 using UnityEngine;
 
-namespace Movement
+namespace Core.Movement
 {
     public class PlayerMovementHandler
     {
         float _movementSpeed = 7f;
         float _rotationSpeed = 15f;
         
-        InputHandler _inputHandler;
-        Rigidbody _playerRigidBody;
+        Rigidbody _rigidbody;
         Vector3 _moveDirection;
         Transform _cameraObject;
 
-        public PlayerMovementHandler(InputHandler inputHandler, Rigidbody playerRigidBody)
+        public PlayerMovementHandler(Rigidbody rigidbody)
         {
-            _inputHandler = inputHandler;
-            _playerRigidBody = playerRigidBody;
-            if (Camera.main != null) _cameraObject = Camera.main.transform;
+            _rigidbody = rigidbody;
+            if (UnityEngine.Camera.main != null) _cameraObject = UnityEngine.Camera.main.transform;
         }
 
-        public void HandleAllMovement()
+        public void HandleAllMovement(float verticalInput, float horizontalInput)
         {
-            HandleMovement();
-            HandleRotation();
+            HandleMovement(verticalInput, horizontalInput);
+            HandleRotation(verticalInput, horizontalInput);
         }
 
-        void HandleMovement()
+        void HandleMovement(float verticalInput, float horizontalInput)
         {
-            _moveDirection = _cameraObject.forward * _inputHandler.VerticalInput;
-            _moveDirection += _cameraObject.right * _inputHandler.HorizontalInput;
+            _moveDirection = _cameraObject.forward * verticalInput;
+            _moveDirection += _cameraObject.right * horizontalInput;
             _moveDirection.Normalize();
             _moveDirection.y = 0;
             _moveDirection *= _movementSpeed;
             
             var movementVelocity = _moveDirection;
-            _playerRigidBody.velocity = movementVelocity;
+            _rigidbody.velocity = movementVelocity;
         }
 
-        void HandleRotation()
+        void HandleRotation(float verticalInput, float horizontalInput)
         {
             var targetDirection = Vector3.zero;
-            targetDirection = _cameraObject.forward * _inputHandler.VerticalInput;
-            targetDirection += _cameraObject.right * _inputHandler.HorizontalInput;
+            targetDirection = _cameraObject.forward * verticalInput;
+            targetDirection += _cameraObject.right * horizontalInput;
             targetDirection.Normalize();
             targetDirection.y = 0;
 
             if (targetDirection == Vector3.zero)
-                targetDirection = _playerRigidBody.transform.forward;
+                targetDirection = _rigidbody.transform.forward;
 
             var targetRotation = Quaternion.LookRotation(targetDirection);
-            var playerRotation = Quaternion.Slerp(_playerRigidBody.transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+            var playerRotation = Quaternion.Slerp(_rigidbody.transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
 
-            _playerRigidBody.transform.rotation = playerRotation;
+            _rigidbody.transform.rotation = playerRotation;
         }
     }
 }
