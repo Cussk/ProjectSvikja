@@ -27,13 +27,13 @@ namespace Core.Camera
             _targetTransform = _playerController.transform;
         }
 
-        public void HandleAllCameraMovement(float cameraInputY, float cameraInputX)
-        {
-            FollowTarget();
-            RotateCamera(cameraInputY, cameraInputX);
-        }
+        // public void HandleAllCameraMovement(float cameraInputY, float cameraInputX)
+        // {
+        //     FollowTarget();
+        //     RotateCamera(cameraInputY, cameraInputX);
+        // }
         
-        void FollowTarget()
+        public void FollowTarget()
         {
             var targetPosition = Vector3.SmoothDamp(transform.position, _targetTransform.position,
                 ref _cameraFollowVelocity, cameraFollowSpeed);
@@ -41,7 +41,7 @@ namespace Core.Camera
             transform.position = targetPosition;
         }
 
-        void RotateCamera(float cameraInputY, float cameraInputX)
+        public  void RotateCamera(float cameraInputY, float cameraInputX)
         {
             _pitchAngle = Mathf.Lerp(_pitchAngle, _pitchAngle + (cameraInputY * cameraPitchSpeed), cameraLookSmoothTime * Time.deltaTime);
             _yawAngle = Mathf.Lerp(_yawAngle, _yawAngle + (cameraInputX * cameraYawSpeed), cameraLookSmoothTime * Time.deltaTime);

@@ -27,11 +27,12 @@ namespace Core.StateMachines.Player
         public override void FixedTick(float deltaTime)
         {
             playerStateMachine.PlayerMovementHandler.HandleAllMovement(_verticalInput, _horizontalInput);
+            playerStateMachine.CameraController.FollowTarget();
         }
 
         public override void LateTick(float deltaTime)
         {
-            playerStateMachine.CameraController.HandleAllCameraMovement(_cameraInputY, _cameraInputX);
+            playerStateMachine.CameraController.RotateCamera(_cameraInputY, _cameraInputX);
         }
 
         public override void Exit()
